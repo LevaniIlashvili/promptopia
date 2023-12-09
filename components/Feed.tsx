@@ -4,7 +4,7 @@ import PromptCard from "./PromptCard";
 
 type Creator = {
   email: string;
-  password: string;
+  username: string;
   _id: string;
 };
 
@@ -22,7 +22,6 @@ const PromptCardList = ({
   data: Prompt[];
   handleTagClick: any;
 }) => {
-  console.log(data);
   return (
     <div className="mt-16 prompt_layout">
       {data.map((prompt: Prompt) => {
@@ -31,7 +30,7 @@ const PromptCardList = ({
           <PromptCard
             key={prompt._id}
             prompt={prompt}
-            handtleTagClick={handleTagClick}
+            handleTagClick={handleTagClick}
           />
         );
       })}
@@ -42,18 +41,37 @@ const PromptCardList = ({
 const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [prompts, setPrompts] = useState([]);
+  const [filteredPrompts, setFilteredPrompts] = useState([]);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
+  const handleTagClick = (tag: string) => {
+    console.log("ckicked");
+    setSearchText(tag);
+  };
 
   useEffect(() => {
     const fetchPrompts = async () => {
       const response = await fetch("/api/prompt");
       const data = await response.json();
       setPrompts(data);
+      setFilteredPrompts(data);
     };
 
     fetchPrompts();
   }, []);
+
+  useEffect(() => {
+    const filteredPrompts = prompts.filter(
+      (prompt: Prompt) =>
+        prompt.prompt.toLowerCase().includes(searchText.toLowerCase()) ||
+        prompt.tag.toLowerCase().includes(searchText.toLowerCase()) ||
+        prompt.creator.username.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredPrompts(filteredPrompts);
+  }, [searchText]);
 
   return (
     <section className="feed">
@@ -66,7 +84,7 @@ const Feed = () => {
         />
       </form>
 
-      <PromptCardList data={prompts} handleTagClick={() => {}} />
+      <PromptCardList data={filteredPrompts} handleTagClick={handleTagClick} />
     </section>
   );
 };

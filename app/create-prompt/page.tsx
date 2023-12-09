@@ -6,7 +6,7 @@ import Form from "@components/Form";
 
 const CreatePrompt = () => {
   const [submitting, setSubmitting] = useState(false);
-  const [post, setPost] = useState({ prompt: "", tag: "" });
+  const [prompt, setPrompt] = useState({ prompt: "", tag: "" });
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -18,9 +18,9 @@ const CreatePrompt = () => {
       const response = await fetch("/api/prompt/new", {
         method: "POST",
         body: JSON.stringify({
-          prompt: post.prompt,
+          prompt: prompt.prompt,
           userId: session?.user.id,
-          tag: post.tag,
+          tag: prompt.tag,
         }),
       });
 
@@ -37,8 +37,8 @@ const CreatePrompt = () => {
   return (
     <Form
       type="Create"
-      post={post}
-      setPost={setPost}
+      prompt={prompt}
+      setPrompt={setPrompt}
       submitting={submitting}
       handleSubmit={createPrompt}
     />
