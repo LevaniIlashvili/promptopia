@@ -10,7 +10,7 @@ const CreatePrompt = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
-  const createPrompt = async (e) => {
+  const createPrompt = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
 
